@@ -1,0 +1,11 @@
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /src/
+COPY main.go go.* /src/
+RUN CGO_ENABLED=0 go build -o /bin/main
+
+FROM alpine
+COPY --from=builder /bin/main /bin/main
+EXPOSE 5432
+ENTRYPOINT [ "./bin/main"]
+
