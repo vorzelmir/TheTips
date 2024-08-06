@@ -1,0 +1,24 @@
+<volume type='file'>
+  <name>new-volume</name>
+  <key>/var/lib/libvirt/images/vol-alloc</key>
+  <capacity unit='bytes'>2147483648</capacity>
+  <allocation unit='bytes'>2147491840</allocation>
+  <physical unit='bytes'>2147483648</physical>
+  <target>
+    <path>/var/lib/libvirt/images/vol-alloc</path>
+    <format type='raw'/>
+    <permissions>
+      <mode>0600</mode>
+      <owner>107</owner>
+      <group>107</group>
+      <label>system_u:object_r:svirt_image_t:s0:c915,c952</label>
+    </permissions>
+    <timestamps>
+      <atime>1721914411.284852741</atime>
+      <mtime>1721914297.631625692</mtime>
+      <ctime>1721914297.631625692</ctime>
+      <btime>0</btime>
+    </timestamps>
+  </target>
+</volume>
+
