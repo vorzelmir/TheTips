@@ -45,11 +45,11 @@ run Virtual Machine based on Oralcle Linux Server
 
 `localhost# virsh start ol9.3`
 
-connect to VM
+run virtual machine viewer to login
 
 `localhost$ virt-viewer --connect qemu:///system`
 
-or connect to VM throw ssh
+connect to VM throw ssh
 
 `localhost$ ssh username@ol9.3-ip-address`
 
