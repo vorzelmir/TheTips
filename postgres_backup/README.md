@@ -52,6 +52,7 @@ get the result
 ...
 
 ```
+
 #### logical backup
 
 with **pg_dump**
@@ -153,11 +154,4 @@ to verify the result of backup run **pg_verifybackup**
 ```
 backup successfully verified
 ```
-
-
-
-
-
-
-
 

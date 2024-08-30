@@ -3,6 +3,7 @@
 podman version
 
 `localhost$ podman version`
+
 ```
 Client:       Podman Engine
 Version:      4.6.2
@@ -13,12 +14,15 @@ OS/Arch:      linux/amd64
 ```
 
 create pod
+
 `localhost$ podman pod create --publish 5432:5432 --name pod-post-go`
 
 create postgres container inside of the pod from official image
+
 `localhost$ podman create --pod pod-post-go -e POSTGRES_PASSWORD=secret --name con-postgres postgres`
 
 make image from Golang main.go file to get the version of Postgres container
+
 `localhost$ buildah build -f Containerfile --tag img-golang`
 
 
@@ -42,6 +46,7 @@ a0fa12581ba8  localhost/podman-pause:4.6.2-1693251511              56 seconds ag
 6536ba42c7d7  localhost/img-golang:latest                          14 seconds ago  Created     0.0.0.0:5432->5432/tcp  con-golang
 
 ```
+
 containers created but not running
 
 run the pod 
@@ -59,6 +64,7 @@ a0fa12581ba8  localhost/podman-pause:4.6.2-1693251511              3 minutes ago
 6536ba42c7d7  localhost/img-golang:latest                          2 minutes ago  Exited (0) 8 seconds ago  0.0.0.0:5432->5432/tcp  con-golang
 
 ```
+
 get the  postgres version
 
 `localhost$ podman logs con-golang`
