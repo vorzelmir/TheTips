@@ -66,15 +66,15 @@ Create a new demo-server-pod.yaml file
 
 ```
 apiVersion: v1
-  2 kind: Pod
-  3 metadata:
-  4   name: demo-server
-  5 spec:
-  6   containers:
-  7   - name: demo-server-container
-  8     image: registry.gitlab.com/<gitlab-user-name>/demo-server:v1
-  9   imagePullSecrets:
- 10   - name: demo-server-gitlab-secret
+kind: Pod
+metadata:
+  name: demo-server
+spec:
+  containers:
+  - name: demo-server-container
+    image: registry.gitlab.com/<gitlab-user-name>/demo-server:v1
+  imagePullSecrets:
+  - name: demo-server-gitlab-secret
 ```
 
 Run new pod
