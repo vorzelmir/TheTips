@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mariadb-config
+data:
+  master.cnf: |
+    [mariadb]
+    log-bin
+    log-basename=mariadb
+    log_warnings=3
+  slave.cnf: |
+    [mariadb]
+    relay-log=mysqld-relay-bin
+    log-basename=mariadb
+    log_warnings=3
+  master.sql: |
+    create user 'replicator'@'%' identified by 'secret';
+    grant replication slave on *.* to 'replicator'@'%';
+    create database replicatest;
+  slave.sql: |
+      CHANGE MASTER TO
+      MASTER_HOST='mariadb-statefulset-0.mariadb-service.mariadb-ns.svc.cluster.local',
+      MASTER_USER='replicator',
+      MASTER_PASSWORD='secret',
+      MASTER_USE_GTID=slave_pos,
+      MASTER_CONNECT_RETRY=10;
+

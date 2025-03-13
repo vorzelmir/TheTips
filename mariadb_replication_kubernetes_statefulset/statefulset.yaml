@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-statefulset
+spec:
+  serviceName: "mariadb-service"
+  selector:
+    matchLabels: 
+      app: mariadb
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      initContainers:
+        - name: init-mariadb
+          image: mariadb
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: mariadb-global-config
+              mountPath: /mnt/conf.d
+            - name: mariadb-cnf
+              mountPath: /etc/mysql/conf.d
+            - name: mariadb-init
+              mountPath: /docker-entrypoint-initdb.d
+          command:
+           - bash
+           - "-c"
+           - |
+             set -ex
+             [[ $(hostname) =~ -([0-9]+)$ ]] || exit 1
+             suffix=${BASH_REMATCH[1]}
+             containerId=$((1000+$suffix))
+             if [[ $suffix -eq 0 ]] 
+             then
+             cp /mnt/conf.d/master.cnf /etc/mysql/conf.d/server.cnf
+             cp /mnt/conf.d/master.sql /docker-entrypoint-initdb.d/
+             else 
+             cp /mnt/conf.d/slave.cnf /etc/mysql/conf.d/server.cnf
+             cp /mnt/conf.d/slave.sql /docker-entrypoint-initdb.d/
+             fi
+             echo "server-id=$containerId" >> /etc/mysql/conf.d/server.cnf
+      restartPolicy: Always
+      containers:     
+        - name: mariadb
+          image: mariadb
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-creds
+                  key: password
+          ports:
+            - containerPort: 3306
+              name: mariadb-port
+          volumeMounts:
+            # - name: datadir
+            #   mountPath: /var/lib/mysql/
+            - name: mariadb-cnf
+              mountPath: /etc/mysql/conf.d
+            - name: mariadb-init
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mariadb-global-config
+          configMap:
+            name: mariadb-config
+            defaultMode: 0777
+        - name: mariadb-cnf
+          emptyDir: {}
+        - name: mariadb-init
+          emptyDir: {}
+  volumeClaimTemplates:
+  - metadata: 
+      name: datadir
+    spec:
+      accessModes: 
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 300M

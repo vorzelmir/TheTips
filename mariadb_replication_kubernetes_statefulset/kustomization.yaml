@@ -1,0 +1,14 @@
+secretGenerator:
+  - name: mariadb-creds
+    literals:
+      - password=secret
+generatorOptions:
+  disableNameSuffixHash: True
+  labels:
+    type: generated
+  annotations: 
+    note: secret-generated
+resources:
+  - statefulset.yaml
+  - configmap.yaml
+  - service.yaml
