@@ -1,0 +1,11 @@
+---
+- hosts: switch
+  name: Setup vlans
+  gather_facts: false
+  tasks:
+  - name: Save changes into startup-config
+    cisco.ios.ios_config:
+      lines:
+        - do copy running-config startup-config
+          # or - do write
+

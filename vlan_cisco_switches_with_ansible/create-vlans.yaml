@@ -1,0 +1,16 @@
+---
+- hosts: switch
+  name: Setup vlans
+  gather_facts: false
+  tasks:
+  - name: Enable vlans on the all switches
+    cisco.ios.ios_vlans:
+      config:
+      - name: Vlan30
+        vlan_id: 30
+        state: active
+        shutdown: disabled
+      - name: Vlan40
+        vlan_id: 40
+        state: active
+        shutdown: disabled

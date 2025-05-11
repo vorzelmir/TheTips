@@ -1,0 +1,15 @@
+---
+switch:
+  children:
+    L3:
+      hosts:
+        192.168.124.2:
+    L2:
+      hosts:
+        192.168.124.3:
+        192.168.124.4:
+  vars:
+    ansible_user: admin
+    ansible_password: secret
+    ansible_network_os: ios
+    ansible_connection: ansible.netcommon.network_cli

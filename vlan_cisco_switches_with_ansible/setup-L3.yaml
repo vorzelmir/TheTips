@@ -1,0 +1,20 @@
+- hosts: L3
+  name: Setup main switch
+  gather_facts: false
+  tasks:
+    - name: Enable trunk on ports
+      cisco.ios.config:
+        lines:
+          - interface range Ethernet0/0, Ethernet0/2 
+          - switchport trunk encapsulation dot1q
+          - switchport mode trunk
+    - name: Config L3 switch to route vlan's packets
+      cisco.ios.config:
+        lines:
+          - interface vlan 30 
+          - ip address 192.168.30.254 255.255.255.0
+          - no shutdown
+          - interface vlan 40
+          - ip address 192.168.40.254 255.255.255.0
+          - no shutdown
+          - ip routing

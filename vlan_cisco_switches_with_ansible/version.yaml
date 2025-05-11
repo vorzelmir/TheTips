@@ -1,0 +1,13 @@
+---
+- name: Ping switches
+  hosts: switch
+  gather_facts: false
+  tasks:
+    - name: Get version
+      register: version_output
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | include ^version
+    - name: Output version
+      ansible.builtin.debug:
+        var: version_output.stdout_lines
