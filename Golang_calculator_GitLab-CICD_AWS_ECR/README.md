@@ -1,6 +1,6 @@
-### Create and test Golang calculator with the GitLab-CI/CD, Podman executor and deploy an image to the AWS ECR
+### Create and test Golang calculator with the GitLab-CI/CD, Podman executor, and deploy an image to the AWS ECR
 
-The new project in the GitLab.com is go-calculator
+The new project on GitLab.com is go-calculator
 
 
 
@@ -17,7 +17,7 @@ localhost/calc-test                                  latest               75d343
 
 ```
 
-Create project access token in GitLab.com __Settings__ -> __Access tokens__ -> __Add new token__ with __write_registry__ and 
+Create a project access token in GitLab.com __Settings__ -> __Access tokens__ -> __Add new token__ with __write_registry__ and 
 __read_registry__ permissions. Save username __admin__ and password.
 
 Login podman with the GitLab.com container registry
@@ -28,7 +28,7 @@ localhost$ podman login -u admin -p ****** --authfile ~/.config/containers/go-ca
 
 ```
 
-Push test image to the GitLab.com container registry
+Push the test image to the GitLab.com container registry.
 
 
 ```
@@ -45,9 +45,9 @@ Writing manifest to image destination
 
 #### AWS needed steps
 
-1. Create IAM __admin__ user, set AdministratorAccess and AmazonECS_FullAccess permissions and save credentions of this user
+1. Create IAM __admin__ user, set AdministratorAccess and AmazonECS_FullAccess permissions, and save credentials of this user
 
-2. Create private repository in the ECR with __gitlab-repo__ name.
+2. Create a private repository in the ECR with __gitlab-repo__ name.
 
 
 #### Create some variables in the GitLab.com
@@ -57,7 +57,7 @@ aws_secret_access_key to the $AWS_SECRET_ACCESS_KEY.
 
 Both variables are Masked and Expanded.
 
-Assign $AWS_DEFAULT_REGION as IAM user working regioni us-east-1 for example.
+Assign $AWS_DEFAULT_REGION as IAM user working region us-east-1 for example.
 
 Assign $AWS_ECR_URI to <Account ID>.dkr.ecr.<region>.amazonaws.com
 
@@ -66,7 +66,7 @@ These variables can be Visible
 
 #### GitLab.com pipeline .pre job
 
-This job to establish aws cli connection from GitLab.com to the Amazon ECR
+This job is to establish aws cli connection from GitLab.com to the Amazon ECR
 
 ```
 
@@ -77,7 +77,7 @@ get_aws_ecr_creds:
     name: amazon/aws-cli:2.27.46
     entrypoint: [""]
   script:
-# try to connect to the AWS ECR, if credentions are valid save its 
+# try to connect to the AWS ECR, if credentials are valid save its 
    - aws ecr get-login-password --region $AWS_DEFAULT_REGION > aws_ecr_creds.txt
   artifacts:
     paths:
@@ -85,7 +85,7 @@ get_aws_ecr_creds:
 ```
 
 
-when the job executed
+when the job is executed
 
 ```
 
@@ -103,7 +103,7 @@ Job succeeded
 
 #### GitLab.com pipeline test_go_calc job
 
-Create __test_go_calc__ job inside __test__ stage to test go-calculator application with Podman executor 
+Create __test_go_calc__ job inside the __test__ stage to test go-calculator application with the Podman executor 
 
 ```
 
@@ -155,7 +155,7 @@ Job succeeded
 
 #### GitLab.com pipeline deploy_img_to_aws job
 
-This job builds image from Containerfile.build and deploy it to the AWS ECR
+This job builds an image from Containerfile.build and deploy it to the AWS ECR
 
 ```
 
@@ -163,7 +163,7 @@ deploy_img_to_aws:
   stage: deploy
   image: quay.io/containers/podman
   script:
-# build image with podman
+# build the image with podman
     - podman build -t go-calc-build -f Containerfile.build .
 # podman login to the AWS ECR with artifacts credentials from .pre job
     - cat aws_ecr_creds.txt | podman login --username AWS  --password-stdin  $AWS_ECR_URI
@@ -188,7 +188,7 @@ Job succeeded
 
 #### GitLab.com pipeline run_img_from_aws job - create and run container from AWS ECR image
 
-This job downloads image from AWS ECR runs container and gets it logs
+This job downloads an image from AWS ECR runs a container and gets it logs
 
 ```
 run_img_from_aws:
