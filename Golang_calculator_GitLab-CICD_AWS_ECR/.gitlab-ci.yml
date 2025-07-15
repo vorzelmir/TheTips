@@ -1,0 +1,44 @@
+stages:
+  - test
+  - deploy
+  - run
+
+
+get_aws_ecr_creds:
+  stage: .pre
+  image:
+    name: amazon/aws-cli:2.27.46
+    entrypoint: [""]
+  script:
+   - aws ecr get-login-password --region $AWS_DEFAULT_REGION > aws_ecr_creds.txt
+  artifacts:
+    paths:
+      - aws_ecr_creds.txt
+
+
+run_go_calc_test:
+  stage: test
+  image: quay.io/containers/podman
+  script:
+    - podman login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - podman run -dt --name go-calc-test $CI_REGISTRY_IMAGE/calc_test
+    - podman ps -a
+    - podman logs go-calc-test
+
+deploy_img_to_aws:
+  stage: deploy
+  image: quay.io/containers/podman
+  script:
+    - cat aws_ecr_creds.txt | podman login --username AWS  --password-stdin  $AWS_ECR_URI
+    - podman build -t go-calc-build -f Containerfile.build .
+    - podman push go-calc-build $AWS_ECR_URI/gitlab-repo
+
+run_img_from_aws:
+  stage: run
+  image: quay.io/containers/podman
+  script:
+    - cat aws_ecr_creds.txt | podman login --username AWS --password-stdin $AWS_ECR_URI
+    - podman run -dt --name go-calc $AWS_ECR_URI/gitlab-repo:latest
+    - podman ps -a
+    - podman logs go-calc
+    

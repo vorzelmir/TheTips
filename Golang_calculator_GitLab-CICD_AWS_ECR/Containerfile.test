@@ -1,0 +1,12 @@
+FROM golang:alpine AS tester
+WORKDIR /test
+COPY go.mod .
+COPY cmd/ ./cmd
+COPY internal/ ./internal
+COPY test/ ./test
+RUN go test -c test/calculator_test.go -o calc.test
+
+FROM alpine
+WORkDIR /test
+COPY --from=tester /test/calc.test /test/calc.test
+CMD ["./calc.test", "-test.v"]

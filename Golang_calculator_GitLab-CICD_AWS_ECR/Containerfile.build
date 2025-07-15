@@ -1,0 +1,11 @@
+FROM docker.io/golang:tip-alpine3.22 AS builder
+WORKDIR /build
+COPY go.mod .
+COPY cmd/ ./cmd
+COPY internal/ ./internal
+RUN go build -o calc cmd/calc/main.go
+
+FROM alpine
+WORKDIR /build
+COPY --from=builder /build/calc /build/calc
+CMD ["./calc"]
